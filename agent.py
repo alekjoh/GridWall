@@ -11,7 +11,7 @@ class Agent:
         self.rounds_won = 0
         self.rounds_lost = 0
         
-        self.learning_rate = 0.2 # For propogating the reward
+        self.learning_rate = 0.3 # For propogating the reward
         self.exp_rate = 0.4 # Prob used when exploring. Basically the chance that the agent will do a random action
         
         
@@ -24,8 +24,16 @@ class Agent:
     def choose_action(self):
         # If randomness, then do random move.
         if random(1) < self.exp_rate:
-            rand_index = floor(random(len(self.actions)))
-            return self.actions[rand_index]
+            mutable_action_list = [action for action in self.actions]
+            
+            rand_index = floor(random(len(mutable_action_list)))
+            action = mutable_action_list.pop(rand_index)
+            
+            while not self.board.is_valid_action(action):
+                rand_index = floor(random(len(mutable_action_list)))
+                action = mutable_action_list.pop(rand_index)
+                
+            return action
         else:
             # Find best outcome.
             best_outcome = -1000 # So far it is pretty bad...
